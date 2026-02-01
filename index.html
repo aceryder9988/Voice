@@ -1,47 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EchoLab Pro AI Voices</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoiceFlow Multi-Theme Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            transition: all 0.5s ease;
+        }
+
+        /* Themes Configuration */
+        body.theme-light { background: linear-gradient(135deg, #f0f4ff 0%, #e5e7eb 100%); color: #1f2937; }
+        body.theme-dark { background: #0a0a0c; color: #f3f4f6; }
+        body.theme-purple { background: linear-gradient(135deg, #2e1065 0%, #000000 100%); color: #f5f3ff; }
+
+        .glass-panel {
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s ease;
+        }
+
+        .theme-light .glass-panel { background: rgba(255, 255, 255, 0.7); border-color: rgba(255, 255, 255, 0.8); }
+        .theme-dark .glass-panel { background: rgba(24, 24, 27, 0.8); border-color: rgba(63, 63, 70, 0.5); }
+        .theme-purple .glass-panel { background: rgba(88, 28, 135, 0.1); border-color: rgba(167, 139, 250, 0.2); }
+
+        .wave-bar { width: 4px; height: 4px; background: #3b82f6; border-radius: 2px; }
+        .active .wave-bar { animation: wave-anim 0.5s infinite alternate; }
+        @keyframes wave-anim { from { height: 4px; } to { height: 25px; } }
+
+        select, textarea { transition: background 0.3s, color 0.3s; }
+    </style>
 </head>
-<body>
+<body class="theme-light w-full p-6 md:p-12" id="mainBody">
 
-<div class="container">
-  <header>
-    <h1>🎤 EchoLab Pro AI</h1>
-    <button onclick="toggleDark()">🌙 Dark Mode</button>
-  </header>
+    <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 h-[85vh]">
+        
+        <div class="lg:col-span-8 h-full">
+            <div class="glass-panel h-full rounded-[2.5rem] p-10 flex flex-col">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-sm font-extrabold uppercase tracking-widest text-blue-500">Script Editor</h2>
+                    </div>
+                    <div class="flex gap-2 bg-black/10 p-1 rounded-full">
+                        <button onclick="setTheme('light')" class="w-6 h-6 rounded-full bg-white border border-gray-300"></button>
+                        <button onclick="setTheme('dark')" class="w-6 h-6 rounded-full bg-zinc-900 border border-zinc-700"></button>
+                        <button onclick="setTheme('purple')" class="w-6 h-6 rounded-full bg-purple-600 border border-purple-400"></button>
+                    </div>
+                </div>
+                <textarea id="textInput" class="w-full h-full bg-transparent border-none outline-none resize-none text-2xl font-light leading-relaxed placeholder-gray-500" 
+                placeholder="Yahan apna text likhein..."></textarea>
+            </div>
+        </div>
 
-  <textarea id="textInput" placeholder="Enter text here..."></textarea>
+        <div class="lg:col-span-4 h-full">
+            <div class="glass-panel h-full rounded-[2.5rem] p-8 flex flex-col justify-between">
+                
+                <div>
+                    <h1 class="text-3xl font-extrabold mb-8 italic tracking-tighter">VOICE<span class="text-blue-500">FLOW</span></h1>
+                    
+                    <div class="space-y-8">
+                        <div>
+                            <label class="text-[11px] font-bold uppercase tracking-wider mb-3 block opacity-50">Select Voice</label>
+                            <select id="voiceSelect" class="w-full bg-white/10 border border-white/10 rounded-2xl p-4 text-sm outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"></select>
+                        </div>
 
-  <div class="controls">
-    <label for="voiceSelect">Choose Voice:</label>
-    <select id="voiceSelect">
-      <option value="EXAVITQu4vr4xnSDxMaL">English Female</option>
-      <option value="21m00Tcm4TlvDq8ikWAM">English Male</option>
-      <option value="HindiVoiceID">Hindi Voice</option>
-      <option value="UrduVoiceID">Urdu Voice</option>
-    </select>
+                        <div class="grid grid-cols-1 gap-6">
+                            <div class="p-4 rounded-2xl bg-black/5 border border-white/5">
+                                <div class="flex justify-between text-[11px] font-bold mb-3 uppercase"><span>Speed</span><span id="speedVal" class="text-blue-500">1.0x</span></div>
+                                <input type="range" id="rate" min="0.5" max="1.5" value="1.0" step="0.1" class="w-full cursor-pointer accent-blue-500">
+                            </div>
+                            <div class="p-4 rounded-2xl bg-black/5 border border-white/5">
+                                <div class="flex justify-between text-[11px] font-bold mb-3 uppercase"><span>Pitch</span><span id="pitchVal" class="text-blue-500">1.0x</span></div>
+                                <input type="range" id="pitch" min="0.5" max="1.5" value="1.0" step="0.1" class="w-full cursor-pointer accent-blue-500">
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    <label>Speed: <span id="rateVal">1.0</span></label>
-    <input type="range" id="rate" min="0.5" max="2" step="0.1" value="1">
+                <div class="space-y-4">
+                    <button onclick="playVoice()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 rounded-2xl transition-all shadow-lg active:scale-95">Play Audio 🔊</button>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="pauseVoice()" class="bg-black/10 py-3 rounded-xl text-xs font-bold uppercase tracking-widest">Pause ⏸</button>
+                        <button onclick="resumeVoice()" class="bg-black/10 py-3 rounded-xl text-xs font-bold uppercase tracking-widest">Resume ▶</button>
+                    </div>
 
-    <label>Pitch: <span id="pitchVal">1.0</span></label>
-    <input type="range" id="pitch" min="0.5" max="2" step="0.1" value="1">
-  </div>
+                    <button onclick="downloadMP3()" class="w-full border-2 border-blue-500/30 text-blue-500 font-bold py-4 rounded-2xl mt-2 hover:bg-blue-500/10 transition">Download MP3 📥</button>
+                    <p id="helperMsg" class="text-[10px] text-center opacity-50 mt-2 font-medium"></p>
+                </div>
 
-  <button id="downloadBtn">⬇ Download MP3</button>
+            </div>
+        </div>
+    </div>
 
-  <!-- Placeholder for ads -->
-  <div class="ads">
-    <p>Your Ad Here</p>
-  </div>
+    <script>
+        const synth = window.speechSynthesis;
+        const voiceSelect = document.getElementById('voiceSelect');
+        const textInput = document.getElementById('textInput');
+        const mainBody = document.getElementById('mainBody');
+        let voices = [];
 
-  <footer>Pro AI TTS — Customize, Monetize, Upgrade</footer>
-</div>
+        function setTheme(t) {
+            mainBody.className = `theme-${t} w-full p-6 md:p-12`;
+        }
 
-<script src="script.js"></script>
+        function initVoices() {
+            voices = synth.getVoices();
+            voiceSelect.innerHTML = voices.map((v, i) => `<option value="${i}">${v.name} (${v.lang})</option>`).join('');
+        }
+
+        if (speechSynthesis.onvoiceschanged !== undefined) speechSynthesis.onvoiceschanged = initVoices;
+
+        function playVoice() {
+            if (synth.speaking) synth.cancel();
+            const utterance = new SpeechSynthesisUtterance(textInput.value);
+            utterance.voice = voices[voiceSelect.value];
+            utterance.rate = document.getElementById('rate').value;
+            utterance.pitch = document.getElementById('pitch').value;
+            synth.speak(utterance);
+        }
+
+        function pauseVoice() { synth.pause(); }
+        function resumeVoice() { synth.resume(); }
+
+        async function downloadMP3() {
+            document.getElementById('helperMsg').innerText = "Select 'This Tab' & check 'Share Audio'";
+            try {
+                const stream = await navigator.mediaDevices.getDisplayMedia({ audio: true, video: true });
+                const recorder = new MediaRecorder(stream);
+                let chunks = [];
+                recorder.ondataavailable = e => chunks.push(e.data);
+                recorder.onstop = () => {
+                    const blob = new Blob(chunks, { type: 'audio/mp3' });
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = "voiceover.mp3";
+                    a.click();
+                    stream.getTracks().forEach(t => t.stop());
+                };
+                recorder.start();
+                playVoice();
+                const check = setInterval(() => { if(!synth.speaking) { recorder.stop(); clearInterval(check); } }, 1000);
+            } catch(e) {}
+        }
+
+        document.getElementById('rate').oninput = (e) => document.getElementById('speedVal').innerText = e.target.value + 'x';
+        document.getElementById('pitch').oninput = (e) => document.getElementById('pitchVal').innerText = e.target.value + 'x';
+        
+        window.onload = initVoices;
+    </script>
 </body>
 </html>
